@@ -1,0 +1,61 @@
+# Import necessary modules and functions
+import sut
+import random
+
+# Define global variables
+sut = None  # System Under Test (SUT) instance
+R = random.Random()  # Random number generator
+
+# Actions to be used in the TSTL script
+def add_product_to_cart():
+    global sut
+    product_id = R.choice(sut.products.keys())
+    quantity = R.randint(1, sut.products[product_id]['stock_quantity'])
+    sut.add_to_cart(product_id, quantity)
+
+def remove_product_from_cart():
+    global sut
+    product_id = R.choice(list(sut.cart.keys()))
+    quantity = R.randint(1, sut.cart[product_id])
+    sut.remove_from_cart(product_id, quantity)
+
+def create_customer():
+    global sut
+    customer_id = R.randint(1, 1000)
+    name = sut.rand_str()
+    email = sut.rand_email()
+    address = sut.rand_str()
+    sut.create_customer(customer_id, name, email, address)
+
+def find_customer_by_email():
+    global sut
+    email = sut.rand_email()
+    sut.find_customer_by_email(email)
+
+# Define the TSTL script
+def main():
+    global sut
+    sut = sut.init()
+    
+    for _ in range(100):
+        choice = R.choice([1, 2, 3, 4, 5, 6, 7])
+        if choice == 1:
+            sut.view_products()
+        elif choice == 2:
+            create_customer()
+        elif choice == 3:
+            find_customer_by_email()
+        elif choice == 4:
+            add_product_to_cart()
+        elif choice == 5:
+            remove_product_from_cart()
+        elif choice == 6:
+            sut.view_cart()
+        elif choice == 7:
+            sut.checkout()
+    
+    sut.quit()
+
+# Run the TSTL script
+if __name__ == '__main__':
+    main()
